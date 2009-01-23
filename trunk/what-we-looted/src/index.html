@@ -1,0 +1,58 @@
+
+<html>
+<body>
+	<title>What-We-Looted - Party Chat log parser - version 0.1 pre-alpha</title>
+	<link type="text/css" rel="stylesheet" href="/stylesheets/style.css" />
+</body>
+
+<div class="disclamer">Keep in mind this is a very early release, there is under 100 lines of code for
+all of this.</div>
+
+<div class="input-form">
+	<form action="/" method="post">
+		<div>Copy chat log in here:</div>
+    	<div><textarea name="content" rows="10" cols="60"></textarea></div>
+        <div><input type="submit" value="Parse"></div>
+    </form>
+</div>
+
+{% for monster in monsters %}
+<div class="monster-summary">
+	<div class="monsters-killed">Killed <strong>{{ monster.killed }} {{ monster.name }}s<strong></div>
+   	<table class="loot">
+   		<thead>
+   			<tr>
+   				<th>Loot name</th>
+   				<th>Looted ammount</th>
+   				<th>Chance of looting</th>
+   			</tr>
+   		</thead>
+   		<tbody>
+   	{% for lt in monster.loot %}
+        <tr>
+        	<td>{{ lt.name }}</td>
+	        <td>{{ lt.qty }}</td>
+	        <td>{{ lt.ratio }}</td>
+        </tr>
+    {% endfor %}
+    	</tbody>    
+    </table>
+</div>
+{% endfor %}
+
+<div class="footer">
+	What-We-Looted pre-alpha 0.1
+	<br/>
+	by Rosomacek, <a href="http://code.google.com/p/what-we-looted/">Project Page</a>
+</div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-7137110-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</html>
