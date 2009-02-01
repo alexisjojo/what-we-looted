@@ -7,6 +7,16 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 class MainPage(webapp.RequestHandler):
+  def listContains(self,list,value):
+      try:
+          has = list.index(value);
+      except ValueError:
+          has = -1;
+      if has == -1:
+          return 0;
+      else:
+          return 1;
+      
   def get(self):
     template_values = {
         'monsters' : {},
@@ -14,11 +24,12 @@ class MainPage(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'index.html')
     self.response.out.write(template.render(path, template_values))      
   def post(self):
-    rawstr = r"""Loot of a (?P<monster>.*): (?P<loot>.*,?)"""
+    rawstr = r"""Loot of (a|an) (?P<monster>.*): (?P<loot>.*,?)"""
     matchstr = cgi.escape(self.request.get('content'))
 
     monsters = {}
     loot = {}
+    multiItems = {}
 
     for m in re.finditer(rawstr, matchstr):
         if monsters.has_key(m.group("monster")):
@@ -34,6 +45,10 @@ class MainPage(webapp.RequestHandler):
             if qty:
                 qty = qty.group(0)
                 item = re.sub("\d+"," ",item).strip().rstrip("s");
+                if not multiItems.has_key(item):
+                   multiItems[item] = []
+                if not self.listContains(multiItems[item],m.group("monster")):
+                    multiItems[item].append(m.group("monster"));
             else:
                 qty = 1
                 item = re.sub("(a|an) "," ",item).strip()
@@ -46,7 +61,7 @@ class MainPage(webapp.RequestHandler):
     for monsterName, lootList in loot.iteritems():
        row = {'name':monsterName,'killed':monsters[monsterName],'loot': []}
        for lootName,lootQty in lootList.iteritems():
-           if lootQty>monsters[monsterName]:
+           if multiItems.has_key(lootName) and self.listContains(multiItems[lootName],monsterName):
                qty = str(round(float(lootQty)/monsters[monsterName],2)) + " on average"
            else:
                qty = str(round(float(lootQty)/monsters[monsterName]*100,2)) + " % chance"
