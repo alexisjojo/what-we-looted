@@ -1,0 +1,34 @@
+<div class="disclamer">Keep in mind this is a very early release, there is under 100 lines of code for
+all of this.</div>
+
+<div class="input-form">
+	<form action="/" method="post">
+		<div>Copy chat log in here:</div>
+    	<div><textarea name="content" rows="10" cols="60"></textarea></div>
+        <div><input type="submit" value="Parse"></div>
+    </form>
+</div>
+
+{% for monster in monsters %}
+<div class="monster-summary">
+	<div class="monsters-killed">Killed <strong>{{ monster.killed }} {{ monster.name }}s<strong></div>
+   	<table class="loot">
+   		<thead>
+   			<tr>
+   				<th>Loot name</th>
+   				<th>Looted ammount</th>
+   				<th>Chance of looting</th>
+   			</tr>
+   		</thead>
+   		<tbody>
+   	{% for lt in monster.loot %}
+        <tr>
+        	<td>{{ lt.name }}</td>
+	        <td>{{ lt.qty }}</td>
+	        <td>{{ lt.ratio }}</td>
+        </tr>
+    {% endfor %}
+    	</tbody>    
+    </table>
+</div>
+{% endfor %}

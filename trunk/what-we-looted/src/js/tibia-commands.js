@@ -97,11 +97,23 @@ CmdUtils
 									row3 = jQuery("tr", data).eq(2).find("td");
 									out = "<table style=\"font-size:12px;border:colapse;table-layout:auto\">"
 									for (i = 0; i < row2.length; i++) {
-										out += "<tr><td>"
-												+ row2.get(i).innerHTML
-												+ "</td><td>"
-												+ row3.get(i).innerHTML
-												+ "</td></tr>";
+										if (row2.get(i).textContent
+												.match(/LINK/))
+											continue;
+										if (row2.get(i).innerHTML.match(/<br/)) {
+											out += "<tr><td>"
+													+ row2.get(i).innerHTML
+													+ "</td><td>"
+													+ row3.get(i).innerHTML
+													+ "</td></tr>";
+										} else {
+											out += "<tr><td>"
+													+ row2.get(i).textContent
+													+ "</td><td>"
+													+ row3.get(i).textContent
+															.replace(/h/, "h ")
+													+ "</td></tr>";
+										}
 									}
 									;
 									out += "</table>";

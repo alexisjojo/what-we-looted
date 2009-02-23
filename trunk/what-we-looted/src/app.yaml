@@ -1,5 +1,5 @@
 application: what-we-looted
-version: 2
+version: 3
 runtime: python
 api_version: 1
 
@@ -11,4 +11,4 @@ handlers:
   static_dir: js
 
 - url: /.*
-  script: data-reader.py
+  script: index.py
