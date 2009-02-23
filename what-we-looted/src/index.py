@@ -1,12 +1,21 @@
-import re
 import cgi
 import os
+import re
 
 from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext.webapp import template
 
-class MainPage(webapp.RequestHandler):
+class ubiquitypage(webapp.RequestHandler):
+  def get(self):
+    head = os.path.join(os.path.dirname(__file__), 'static/head2.html')
+    path = os.path.join(os.path.dirname(__file__), 'static/extensions.html')
+    foot = os.path.join(os.path.dirname(__file__), 'static/footer.html')
+    self.response.out.write(template.render(head, {}))
+    self.response.out.write(template.render(path, {}))
+    self.response.out.write(template.render(foot, {}))
+
+class parserpage(webapp.RequestHandler):
   def listContains(self,list,value):
       try:
           has = list.index(value);
@@ -21,8 +30,13 @@ class MainPage(webapp.RequestHandler):
     template_values = {
         'monsters' : {},
     }
-    path = os.path.join(os.path.dirname(__file__), 'index.html')
-    self.response.out.write(template.render(path, template_values))      
+    
+    head = os.path.join(os.path.dirname(__file__), 'static/head.html')
+    foot = os.path.join(os.path.dirname(__file__), 'static/footer.html')
+    self.response.out.write(template.render(head, {}))
+    path = os.path.join(os.path.dirname(__file__), 'static/parser.html')
+    self.response.out.write(template.render(path, template_values))
+    self.response.out.write(template.render(foot, {}))      
   def post(self):
     rawstr = r"""Loot of (a|an) (?P<monster>.*): (?P<loot>.*,?)"""
     matchstr = cgi.escape(self.request.get('content'))
@@ -70,13 +84,15 @@ class MainPage(webapp.RequestHandler):
     template_values = {
         'monsters' : monstersProcessed,
     }
-        
-    path = os.path.join(os.path.dirname(__file__), 'index.html')
-    self.response.out.write(template.render(path, template_values))    
+    head = os.path.join(os.path.dirname(__file__), 'static/head.html')
+    foot = os.path.join(os.path.dirname(__file__), 'static/footer.html')
+    path = os.path.join(os.path.dirname(__file__), 'static/parser.html')
+    self.response.out.write(template.render(head, {}))
+    self.response.out.write(template.render(path, template_values))
+    self.response.out.write(template.render(foot, {}))
 
-application = webapp.WSGIApplication(
-                                     [('/', MainPage)],
-                                     debug=False)
+
+application = webapp.WSGIApplication([('/', parserpage),('/ubiquity',ubiquitypage)],debug=True)
 
 def main():
   run_wsgi_app(application)
